@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define PAYLOAD_SIZE 1024
 #define NAME_SIZE 20
@@ -14,7 +15,7 @@ typedef struct Device Device;
 typedef struct Packet Packet;
 typedef enum DeviceType DeviceType;
 
-enum DeviceType { ROUTER, SWITCH, COMPUTER };
+enum DeviceType { ROUTER, SWITCH, COMPUTER, CARRY };
 
 struct Graph {
   int vertices_count;
@@ -105,6 +106,13 @@ void removeDevice(Graph *graph, int device_id) {
     freeDevice(temp);
     ptr = ptr->next;
   }
+  ptr = d->next;
+  Device *tmp;
+  while (ptr != NULL) {
+    tmp = ptr;
+    ptr = ptr->next;
+    freeDevice(tmp);
+  }
   freeDevice(d);
   graph->nodes[device_id] = NULL;
   graph->device_count--;
@@ -121,3 +129,21 @@ Device *newDevice(DeviceType type) {
   d->next = NULL;
   return d;
 }
+
+void addConnection(Graph *graph, int src, int dest) {
+  if (src == dest) {
+    printf("warning self loops are not allowed\n");
+    return;
+  }
+  Device *d = newDevice(CARRY);
+  d->id = dest;
+  d->next = graph->nodes[src]->next;
+  graph->nodes[src]->next = d;
+
+  d = newDevice(CARRY);
+  d->id = src;
+  d->next = graph->nodes[dest]->next;
+  graph->nodes[dest]->next = d;
+}
+
+void removeConnection(Graph *graph, int src, int dest) {}

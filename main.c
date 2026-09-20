@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #define PAYLOAD_SIZE 1024
@@ -73,7 +74,7 @@ void resizeGraph(Graph *graph) {
 }
 
 void freeGraph(Graph *graph) {
-  for (int i = 0; i < graph->vertices_count; i++) {
+  for (int i = 0; i < graph->next_slot; i++) {
     free(graph->nodes[i]);
   }
   free(graph->nodes);
@@ -93,25 +94,36 @@ int addDevice(Graph *graph, Device *device) {
 }
 void freeDevice(Device *device) { free(device); }
 
+int removeNextLink(Device *head, int id) {
+  if (head == NULL)
+    return 0;
+  Device *ptr = head->next;
+  Device *previous = head;
+  while (ptr != NULL && ptr->id != id) {
+    previous = ptr;
+    ptr = ptr->next;
+  }
+  if (ptr == NULL) {
+    return 0;
+  }
+  previous->next = ptr->next;
+  freeDevice(ptr);
+  return 1;
+}
+
 void removeDevice(Graph *graph, int device_id) {
   Device *d = graph->nodes[device_id];
   Device *ptr = d->next;
   while (ptr != NULL) {
-    Device *child_ptr = graph->nodes[ptr->id];
-    while (child_ptr->next->id != device_id) {
-      child_ptr = child_ptr->next;
-    }
-    Device *temp = child_ptr->next;
-    child_ptr->next = child_ptr->next->next;
-    freeDevice(temp);
+    Device *neighbour_device = graph->nodes[ptr->id];
+    removeNextLink(neighbour_device, device_id);
     ptr = ptr->next;
   }
   ptr = d->next;
-  Device *tmp;
   while (ptr != NULL) {
-    tmp = ptr;
+    Device *temp = ptr;
     ptr = ptr->next;
-    freeDevice(tmp);
+    freeDevice(temp);
   }
   freeDevice(d);
   graph->nodes[device_id] = NULL;
@@ -146,4 +158,68 @@ void addConnection(Graph *graph, int src, int dest) {
   graph->nodes[dest]->next = d;
 }
 
-void removeConnection(Graph *graph, int src, int dest) {}
+void removeConnection(Graph *graph, int src, int dest) {
+  Device *src_device = graph->nodes[src];
+  Device *dest_device = graph->nodes[dest];
+  removeNextLink(src_device, dest);
+  removeNextLink(dest_device, src);
+}
+
+const char *deviceTypeToString(DeviceType type) {
+  switch (type) {
+  case ROUTER:
+    return "ROUTER";
+  case SWITCH:
+    return "SWITCH";
+  case COMPUTER:
+    return "COMPUTER";
+  case CARRY:
+    return "CARRY";
+  default:
+    return "INVALID";
+  }
+}
+
+void displayGraph(Graph *graph) {
+  for (int i = 0; i < graph->vertices_count; i++) {
+    if (graph->nodes[i] == NULL) {
+      continue;
+    }
+    printf("Device: %s Id: %d\n", graph->nodes[i]->name, graph->nodes[i]->id);
+    Device *next = graph->nodes[i]->next;
+    printf("\tConnection:\n");
+    while (next != NULL) {
+      printf("\tId: %d Name: %s Type: %s\n", graph->nodes[next->id]->id,
+             graph->nodes[next->id]->name,
+             deviceTypeToString(graph->nodes[next->id]->type));
+      next = next->next;
+    }
+  }
+}
+
+void showMenu() {
+  printf("1. Display network\n");
+  printf("2. Add Device\n");
+  printf("3. Remove Device\n");
+  printf("4. Add Connection\n");
+  printf("5. Remove Connection\n");
+  printf("> ");
+}
+
+int main() {
+  // showMenu();
+  Graph *g = newGraph(5);
+  Device *d = newDevice(ROUTER);
+  Device *d2 = newDevice(ROUTER);
+  Device *computer = newDevice(COMPUTER);
+  strcpy(d->name, "merin");
+  strcpy(d2->name, "carlo");
+  strcpy(computer->name, "asus-zenbook");
+  addDevice(g, d);
+  addDevice(g, d2);
+  addDevice(g, computer);
+  addConnection(g, 0, 1);
+  addConnection(g, 2, 0);
+  displayGraph(g);
+  return 0;
+}

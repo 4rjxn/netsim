@@ -38,8 +38,9 @@ void resizeGraph(Graph *graph) {
 }
 
 int addDevice(Graph *graph, Device *device) {
+  if (device == NULL)
+    return -1;
   if (graph->next_slot >= graph->vertices_count) {
-    printf("no space in graph resizing\n");
     resizeGraph(graph);
   }
   graph->nodes[graph->next_slot] = device;
@@ -47,6 +48,16 @@ int addDevice(Graph *graph, Device *device) {
   graph->next_slot++;
   graph->device_count++;
   return device->id;
+}
+
+bool isValidDevice(Graph *graph, int device_id) {
+  if (device_id < 0 || device_id >= graph->next_slot) {
+    return false;
+  }
+  if (graph->nodes[device_id] == NULL) {
+    return false;
+  }
+  return true;
 }
 
 void freeDevice(Device *device) { free(device); }
@@ -70,13 +81,16 @@ int removeNextLink(Device *head, int id) {
 
 void freeGraph(Graph *graph) {
   for (int i = 0; i < graph->next_slot; i++) {
-    free(graph->nodes[i]);
+    removeDevice(graph, i);
   }
   free(graph->nodes);
   free(graph);
 }
 
 void removeDevice(Graph *graph, int device_id) {
+  if (!(isValidDevice(graph, device_id))) {
+    return;
+  }
   Device *d = graph->nodes[device_id];
   Device *ptr = d->next;
   while (ptr != NULL) {
@@ -104,26 +118,17 @@ Device *newDevice(DeviceType type) {
   d->id = -1;
   d->type = type;
   d->next = NULL;
+  d->name[0] = '\0';
   return d;
 }
 
-bool isValidDevice(Graph *graph, int device_id) {
-  if (device_id < 0 || device_id >= graph->next_slot) {
-    return false;
-  }
-  if (graph->nodes[device_id] == NULL) {
-    return false;
-  }
-  return true;
-}
-
 void addConnection(Graph *graph, int src, int dest) {
-  if (src == dest) {
-    printf("warning self loops are not allowed\n");
-    return;
-  }
   if (!(isValidDevice(graph, src) && isValidDevice(graph, dest))) {
     printf("invalid index\n");
+    return;
+  }
+  if (src == dest) {
+    printf("warning self loops are not allowed\n");
     return;
   }
 
@@ -147,6 +152,12 @@ void addConnection(Graph *graph, int src, int dest) {
 }
 
 void removeConnection(Graph *graph, int src, int dest) {
+  if (src == dest) {
+    return;
+  }
+  if (!(isValidDevice(graph, src) && (isValidDevice(graph, dest)))) {
+    return;
+  }
   Device *src_device = graph->nodes[src];
   Device *dest_device = graph->nodes[dest];
   removeNextLink(src_device, dest);
@@ -169,20 +180,23 @@ const char *deviceTypeToString(DeviceType type) {
 }
 
 void displayNetwork(Graph *graph) {
-  for (int i = 0; i < graph->vertices_count; i++) {
+  if (graph->device_count == 0) {
+    printf("empty graph nothing to print.\n");
+  }
+  for (int i = 0; i < graph->next_slot; i++) {
     if (graph->nodes[i] == NULL) {
       continue;
     }
     printf("Device: %s Id: %d\n", graph->nodes[i]->name, graph->nodes[i]->id);
     Device *next = graph->nodes[i]->next;
     printf("\tConnection:\n");
-    int i = 1;
+    int count = 1;
     while (next != NULL) {
-      printf("\t[%d] Id: %d Name: %s Type: %s\n", i, graph->nodes[next->id]->id,
-             graph->nodes[next->id]->name,
+      printf("\t[%d] Id: %d Name: %s Type: %s\n", count,
+             graph->nodes[next->id]->id, graph->nodes[next->id]->name,
              deviceTypeToString(graph->nodes[next->id]->type));
       next = next->next;
-      i++;
+      count++;
     }
   }
 }

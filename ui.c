@@ -2,10 +2,14 @@
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+void prompt(const char *value) {
+  printf("%s", value);
+  fflush(stdout);
+}
 
 void trim(char *str) {
   char *start = str;
@@ -70,4 +74,30 @@ InputStatus readName(char *read_value, size_t size) {
   }
   strcpy(read_value, buf);
   return INPUT_OK;
+}
+
+InputStatus readDeviceType(DeviceType *type) {
+  printf("Choose the device type:\n");
+  printf("\t1. Router\n");
+  printf("\t2. Switch\n");
+  printf("\t3. Computer\n");
+  prompt("choice(1..3): ");
+  int read_int;
+  InputStatus res = readInt(&read_int);
+  if (res != INPUT_OK) {
+    return res;
+  }
+  switch (read_int) {
+  case 1:
+    *type = ROUTER;
+    return INPUT_OK;
+  case 2:
+    *type = SWITCH;
+    return INPUT_OK;
+  case 3:
+    *type = COMPUTER;
+    return INPUT_OK;
+  default:
+    return INPUT_INVALID;
+  }
 }

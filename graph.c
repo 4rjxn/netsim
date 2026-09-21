@@ -80,6 +80,9 @@ int removeNextLink(Device *head, int id) {
 }
 
 void freeGraph(Graph *graph) {
+  if (graph == NULL) {
+    return;
+  }
   for (int i = 0; i < graph->next_slot; i++) {
     removeDevice(graph, i);
   }

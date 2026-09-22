@@ -11,5 +11,6 @@ InputStatus readLine(char *buf, size_t size);
 InputStatus readInt(int *read_value);
 InputStatus readName(char *read_value, size_t size);
 InputStatus readDeviceType(DeviceType *type);
+void prompt(const char *value);
 
 #endif

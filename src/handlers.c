@@ -55,4 +55,23 @@ void addeviceHandler(Graph **graph) {
   }
 }
 
+void connectHandler(Graph **graph) {
+  int src, dest;
+  prompt("\tEnter src id: ");
+  readInt(&src);
+  prompt("\tEnter dest id: ");
+  readInt(&dest);
+  ExecutionStatus status = addConnection(*graph, src, dest);
+  if (status == SELF_LOOP) {
+    printf("self loop found.\n");
+  } else if (status == INVALID_DEVICE) {
+    printf("no device with the id.\n");
+  } else if (status == DUPLICATE_CONNECTION) {
+    printf("duplicate connection dectected.\n");
+  } else {
+    printf("connected [%s] and [%s]", (*graph)->nodes[src]->name,
+           (*graph)->nodes[dest]->name);
+  }
+}
+
 void showHandler(Graph **graph) { displayNetwork(*graph); }

@@ -91,9 +91,9 @@ void freeGraph(Graph *graph) {
   free(graph);
 }
 
-void removeDevice(Graph *graph, int device_id) {
+ExecutionStatus removeDevice(Graph *graph, int device_id) {
   if (!(isValidDevice(graph, device_id))) {
-    return;
+    return INVALID_DEVICE;
   }
   Device *d = graph->nodes[device_id];
   Device *ptr = d->next;
@@ -111,6 +111,7 @@ void removeDevice(Graph *graph, int device_id) {
   freeDevice(d);
   graph->nodes[device_id] = NULL;
   graph->device_count--;
+  return OK;
 }
 
 Device *newDevice(DeviceType type) {
@@ -126,21 +127,18 @@ Device *newDevice(DeviceType type) {
   return d;
 }
 
-void addConnection(Graph *graph, int src, int dest) {
+ExecutionStatus addConnection(Graph *graph, int src, int dest) {
   if (!(isValidDevice(graph, src) && isValidDevice(graph, dest))) {
-    printf("invalid index\n");
-    return;
+    return INVALID_DEVICE;
   }
   if (src == dest) {
-    printf("warning self loops are not allowed\n");
-    return;
+    return SELF_LOOP;
   }
 
   Device *ptr = graph->nodes[src]->next;
   while (ptr != NULL) {
     if (ptr->id == dest) {
-      printf("duplicates are not allowed.\n");
-      return;
+      return DUPLICATE_CONNECTION;
     }
     ptr = ptr->next;
   }
@@ -153,6 +151,7 @@ void addConnection(Graph *graph, int src, int dest) {
   d->id = src;
   d->next = graph->nodes[dest]->next;
   graph->nodes[dest]->next = d;
+  return OK;
 }
 
 void removeConnection(Graph *graph, int src, int dest) {

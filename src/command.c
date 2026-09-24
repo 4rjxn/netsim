@@ -24,6 +24,11 @@ const Command commands[] = {
         .description = "Prints the network with connections.",
         .handler = showHandler,
     },
+    {
+        .name = "connect",
+        .description = "Connects two devices.",
+        .handler = connectHandler,
+    },
 };
 
 const size_t command_count = sizeof(commands) / sizeof(commands[0]);

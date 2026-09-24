@@ -31,11 +31,11 @@ void freeGraph(Graph *graph);
 // addes a new device to the graph
 ExecutionStatus addDevice(Graph *graph, Device *device);
 // removes a device form a graph
-void removeDevice(Graph *graph, int device_id);
+ExecutionStatus removeDevice(Graph *graph, int device_id);
 // creates a new device (device name needs to be specified later)
 Device *newDevice(DeviceType type);
 // addes a connection between two devices
-void addConnection(Graph *graph, int src, int dest);
+ExecutionStatus addConnection(Graph *graph, int src, int dest);
 // removes a connection from two devices
 void removeConnection(Graph *graph, int src, int dest);
 // displayes the given network details form the graph

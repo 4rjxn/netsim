@@ -1,5 +1,6 @@
 #ifndef GRAPH_INCLUDED
 #define GRAPH_INCLUDED
+#include "status.h"
 #define NAME_SIZE 20
 #pragma once
 
@@ -28,7 +29,7 @@ Graph *newGraph(int vertices_count);
 // frees a complete graph from the memmory.
 void freeGraph(Graph *graph);
 // addes a new device to the graph
-int addDevice(Graph *graph, Device *device);
+ExecutionStatus addDevice(Graph *graph, Device *device);
 // removes a device form a graph
 void removeDevice(Graph *graph, int device_id);
 // creates a new device (device name needs to be specified later)

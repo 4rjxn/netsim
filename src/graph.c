@@ -1,4 +1,5 @@
 #include "graph.h"
+#include "status.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,9 +38,9 @@ void resizeGraph(Graph *graph) {
   graph->nodes = temp;
 }
 
-int addDevice(Graph *graph, Device *device) {
+ExecutionStatus addDevice(Graph *graph, Device *device) {
   if (device == NULL)
-    return -1;
+    return NULL_DEVICE;
   if (graph->next_slot >= graph->vertices_count) {
     resizeGraph(graph);
   }
@@ -47,7 +48,7 @@ int addDevice(Graph *graph, Device *device) {
   device->id = graph->next_slot;
   graph->next_slot++;
   graph->device_count++;
-  return device->id;
+  return OK;
 }
 
 bool isValidDevice(Graph *graph, int device_id) {
@@ -190,7 +191,8 @@ void displayNetwork(Graph *graph) {
     if (graph->nodes[i] == NULL) {
       continue;
     }
-    printf("Device: %s Id: %d\n", graph->nodes[i]->name, graph->nodes[i]->id);
+    printf("[%s] Name: %s Id: %d\n", deviceTypeToString(graph->nodes[i]->type),
+           graph->nodes[i]->name, graph->nodes[i]->id);
     Device *next = graph->nodes[i]->next;
     printf("\tConnection:\n");
     int count = 1;

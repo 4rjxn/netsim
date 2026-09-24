@@ -1,6 +1,7 @@
 #include "handlers.h"
 #include "command.h"
 #include "graph.h"
+#include "status.h"
 #include "ui.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,7 +46,13 @@ void addeviceHandler(Graph **graph) {
   }
   Device *device = newDevice(type);
   strcpy(device->name, name);
-  addDevice(*graph, device);
+  ExecutionStatus status = addDevice(*graph, device);
+  if (status != OK) {
+    printf("cannot complete add device action.\n");
+  } else {
+    printf("successfuly added the device [ %s ] to the network\n",
+           device->name);
+  }
 }
 
 void showHandler(Graph **graph) { displayNetwork(*graph); }

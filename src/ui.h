@@ -1,5 +1,5 @@
-#ifndef STATUS_H
-#define STATUS_H
+#ifndef UI_H
+#define UI_H
 #include "graph.h"
 #include <stddef.h>
 #pragma once

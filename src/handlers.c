@@ -55,12 +55,38 @@ void addeviceHandler(Graph **graph) {
   }
 }
 
+void rmdeviceHandler(Graph **graph) {
+  int device_id;
+  prompt("\tEnter the id of the device: ");
+  InputStatus inp_status = readInt(&device_id);
+  if (inp_status != INPUT_OK) {
+    printf("invalid input\n");
+    return;
+  }
+  char name[NAME_SIZE];
+  strcpy(name, (*graph)->nodes[device_id]->name);
+  ExecutionStatus status = removeDevice(*graph, device_id);
+  if (status == INVALID_DEVICE) {
+    printf("cannot find the device.");
+    return;
+  }
+  printf("removed the device [%s] from the network\n", name);
+}
+
 void connectHandler(Graph **graph) {
   int src, dest;
   prompt("\tEnter src id: ");
-  readInt(&src);
+  InputStatus inp_status = readInt(&src);
+  if (inp_status != INPUT_OK) {
+    printf("invalid input\n");
+    return;
+  }
   prompt("\tEnter dest id: ");
-  readInt(&dest);
+  inp_status = readInt(&dest);
+  if (inp_status != INPUT_OK) {
+    printf("invalid input\n");
+    return;
+  }
   ExecutionStatus status = addConnection(*graph, src, dest);
   if (status == SELF_LOOP) {
     printf("self loop found.\n");

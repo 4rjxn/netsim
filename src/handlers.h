@@ -7,6 +7,7 @@ void exitHandler(Graph **graph);
 void helpHandler(Graph **graph);
 void newHandler(Graph **graph);
 void addeviceHandler(Graph **graph);
+void rmdeviceHandler(Graph **graph);
 void showHandler(Graph **graph);
 void connectHandler(Graph **graph);
 

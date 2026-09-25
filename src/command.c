@@ -20,6 +20,11 @@ const Command commands[] = {
         .handler = addeviceHandler,
     },
     {
+        .name = "rmdevice",
+        .description = "removes a device form the network.",
+        .handler = rmdeviceHandler,
+    },
+    {
         .name = "show",
         .description = "Prints the network with connections.",
         .handler = showHandler,

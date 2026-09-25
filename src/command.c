@@ -34,6 +34,11 @@ const Command commands[] = {
         .description = "Connects two devices.",
         .handler = connectHandler,
     },
+    {
+        .name = "disconnect",
+        .description = "Disconnects two devices.",
+        .handler = disconnectHandler,
+    },
 };
 
 const size_t command_count = sizeof(commands) / sizeof(commands[0]);

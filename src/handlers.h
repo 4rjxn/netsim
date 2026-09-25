@@ -10,5 +10,6 @@ void addeviceHandler(Graph **graph);
 void rmdeviceHandler(Graph **graph);
 void showHandler(Graph **graph);
 void connectHandler(Graph **graph);
+void disconnectHandler(Graph **graph);
 
 #endif

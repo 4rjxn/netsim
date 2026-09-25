@@ -154,17 +154,18 @@ ExecutionStatus addConnection(Graph *graph, int src, int dest) {
   return OK;
 }
 
-void removeConnection(Graph *graph, int src, int dest) {
+ExecutionStatus removeConnection(Graph *graph, int src, int dest) {
   if (src == dest) {
-    return;
+    return SELF_LOOP;
   }
   if (!(isValidDevice(graph, src) && (isValidDevice(graph, dest)))) {
-    return;
+    return INVALID_DEVICE;
   }
   Device *src_device = graph->nodes[src];
   Device *dest_device = graph->nodes[dest];
   removeNextLink(src_device, dest);
   removeNextLink(dest_device, src);
+  return OK;
 }
 
 const char *deviceTypeToString(DeviceType type) {

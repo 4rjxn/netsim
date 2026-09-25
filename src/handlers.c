@@ -100,4 +100,31 @@ void connectHandler(Graph **graph) {
   }
 }
 
+void disconnectHandler(Graph **graph) {
+  int src, dest;
+  prompt("\tEnter src id: ");
+  InputStatus inp_status = readInt(&src);
+  if (inp_status != INPUT_OK) {
+    printf("invalid input\n");
+    return;
+  }
+  prompt("\tEnter dest id: ");
+  inp_status = readInt(&dest);
+  if (inp_status != INPUT_OK) {
+    printf("invalid input\n");
+    return;
+  }
+  ExecutionStatus status = removeConnection(*graph, src, dest);
+  if (status == SELF_LOOP) {
+    printf("self loop found.\n");
+  } else if (status == INVALID_DEVICE) {
+    printf("no device with the id.\n");
+  } else if (status == DUPLICATE_CONNECTION) {
+    printf("duplicate connection dectected.\n");
+  } else {
+    printf("disconnected [%s] and [%s]", (*graph)->nodes[src]->name,
+           (*graph)->nodes[dest]->name);
+  }
+}
+
 void showHandler(Graph **graph) { displayNetwork(*graph); }

@@ -101,3 +101,34 @@ InputStatus readDeviceType(DeviceType *type) {
     return INPUT_INVALID;
   }
 }
+
+InputStatus readCommand(InputCommand *command) {
+  char raw_input[256];
+  char delimeters[] = " \t\n\r\f\v";
+  InputStatus input_status = readLine(raw_input, sizeof(raw_input));
+  if (input_status != INPUT_OK) {
+    return input_status;
+  }
+  trim(raw_input);
+  if (*raw_input == '\0') {
+    return INPUT_INVALID;
+  }
+  char *token = strtok(raw_input, delimeters);
+  if (token == NULL) {
+    return INPUT_INVALID;
+  }
+  strcpy(command->command, token);
+  token = strtok(NULL, delimeters);
+  if (token == NULL) {
+    command->arg1[0] = '\0';
+    return INPUT_OK;
+  }
+  strcpy(command->arg1, token);
+  token = strtok(NULL, delimeters);
+  if (token == NULL) {
+    command->arg2[0] = '\0';
+    return INPUT_OK;
+  }
+  strcpy(command->arg2, token);
+  return INPUT_OK;
+}

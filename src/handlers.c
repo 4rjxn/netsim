@@ -3,6 +3,7 @@
 #include "graph.h"
 #include "status.h"
 #include "ui.h"
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -75,18 +76,26 @@ void rmdeviceHandler(Graph **graph, InputCommand *command) {
 
 void connectHandler(Graph **graph, InputCommand *command) {
   int src, dest;
-  prompt("\tEnter src id: ");
-  InputStatus inp_status = readInt(&src);
-  if (inp_status != INPUT_OK) {
-    printf("invalid input\n");
-    return;
+  InputStatus inp_status;
+  if (!(*command->arg1 != '\0' &&
+        StringtoInt(command->arg1, &src) == INPUT_OK)) {
+    prompt("\tEnter src id: ");
+    inp_status = readInt(&src);
+    if (inp_status != INPUT_OK) {
+      printf("invalid input\n");
+      return;
+    }
   }
-  prompt("\tEnter dest id: ");
-  inp_status = readInt(&dest);
-  if (inp_status != INPUT_OK) {
-    printf("invalid input\n");
-    return;
+  if (!(*command->arg2 != '\0' &&
+        StringtoInt(command->arg2, &dest) == INPUT_OK)) {
+    prompt("\tEnter dest id: ");
+    inp_status = readInt(&dest);
+    if (inp_status != INPUT_OK) {
+      printf("invalid input\n");
+      return;
+    }
   }
+
   ExecutionStatus status = addConnection(*graph, src, dest);
   if (status == SELF_LOOP) {
     printf("self loop found.\n");

@@ -3,7 +3,6 @@
 #include "graph.h"
 #include "status.h"
 #include "ui.h"
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,12 +29,14 @@ InputStatus readSrcAndDest(int *src, int *dest, InputCommand *command) {
 }
 
 void exitHandler(Graph **graph, InputCommand *command) {
+  (void)command;
   freeGraph(*graph);
   printf("bye.\n");
   exit(0);
 }
 
 void helpHandler(Graph **graph, InputCommand *command) {
+  (void)command;
   (void)graph;
   printf("Netsim Helper.\n");
   for (size_t i = 0; i < command_count; i++) {
@@ -45,6 +46,7 @@ void helpHandler(Graph **graph, InputCommand *command) {
 }
 
 void newHandler(Graph **graph, InputCommand *command) {
+  (void)command;
   if (graph != NULL) {
     freeGraph(*graph);
   }
@@ -53,6 +55,7 @@ void newHandler(Graph **graph, InputCommand *command) {
 }
 
 void addeviceHandler(Graph **graph, InputCommand *command) {
+  (void)command;
   DeviceType type;
   char name[20];
   InputStatus res = readDeviceType(&type);
@@ -79,13 +82,21 @@ void addeviceHandler(Graph **graph, InputCommand *command) {
 
 void rmdeviceHandler(Graph **graph, InputCommand *command) {
   int device_id;
-  prompt("\tEnter the id of the device: ");
-  InputStatus inp_status = readInt(&device_id);
-  if (inp_status != INPUT_OK) {
-    printf("invalid input\n");
-    return;
+  if (!(*command->arg1 != '\0' &&
+        StringtoInt(command->arg1, &device_id) == INPUT_OK)) {
+    prompt("\tEnter the id of the device: ");
+    InputStatus inp_status = readInt(&device_id);
+    if (inp_status != INPUT_OK) {
+      printf("invalid input\n");
+      return;
+    }
   }
   char name[NAME_SIZE];
+
+  if ((*graph)->nodes[device_id] == NULL) {
+    printf("invalid device id\n");
+    return;
+  }
   strcpy(name, (*graph)->nodes[device_id]->name);
   ExecutionStatus status = removeDevice(*graph, device_id);
   if (status == INVALID_DEVICE) {
@@ -134,5 +145,6 @@ void disconnectHandler(Graph **graph, InputCommand *command) {
 }
 
 void showHandler(Graph **graph, InputCommand *command) {
+  (void)command;
   displayNetwork(*graph);
 }

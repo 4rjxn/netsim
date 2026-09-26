@@ -19,6 +19,7 @@ InputStatus readInt(int *read_value);
 InputStatus readName(char *read_value, size_t size);
 InputStatus readCommand(InputCommand *command);
 InputStatus readDeviceType(DeviceType *type);
+InputStatus StringtoInt(char *buf, int *int_value);
 void prompt(const char *value);
 
 #endif

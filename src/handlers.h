@@ -1,15 +1,16 @@
 #ifndef HANDLERS_H
 #define HANDLERS_H
 #include "graph.h"
+#include "ui.h"
 #pragma once
 
-void exitHandler(Graph **graph);
-void helpHandler(Graph **graph);
-void newHandler(Graph **graph);
-void addeviceHandler(Graph **graph);
-void rmdeviceHandler(Graph **graph);
-void showHandler(Graph **graph);
-void connectHandler(Graph **graph);
-void disconnectHandler(Graph **graph);
+void exitHandler(Graph **graph, InputCommand *command);
+void helpHandler(Graph **graph, InputCommand *command);
+void newHandler(Graph **graph, InputCommand *command);
+void addeviceHandler(Graph **graph, InputCommand *command);
+void rmdeviceHandler(Graph **graph, InputCommand *command);
+void showHandler(Graph **graph, InputCommand *command);
+void connectHandler(Graph **graph, InputCommand *command);
+void disconnectHandler(Graph **graph, InputCommand *command);
 
 #endif

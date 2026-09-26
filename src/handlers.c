@@ -7,13 +7,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-void exitHandler(Graph **graph) {
+void exitHandler(Graph **graph, InputCommand *command) {
   freeGraph(*graph);
   printf("bye.\n");
   exit(0);
 }
 
-void helpHandler(Graph **graph) {
+void helpHandler(Graph **graph, InputCommand *command) {
   (void)graph;
   printf("Netsim Helper.\n");
   for (size_t i = 0; i < command_count; i++) {
@@ -22,7 +22,7 @@ void helpHandler(Graph **graph) {
   }
 }
 
-void newHandler(Graph **graph) {
+void newHandler(Graph **graph, InputCommand *command) {
   if (graph != NULL) {
     freeGraph(*graph);
   }
@@ -30,7 +30,7 @@ void newHandler(Graph **graph) {
   printf("created new graph.\n");
 }
 
-void addeviceHandler(Graph **graph) {
+void addeviceHandler(Graph **graph, InputCommand *command) {
   DeviceType type;
   char name[20];
   InputStatus res = readDeviceType(&type);
@@ -55,7 +55,7 @@ void addeviceHandler(Graph **graph) {
   }
 }
 
-void rmdeviceHandler(Graph **graph) {
+void rmdeviceHandler(Graph **graph, InputCommand *command) {
   int device_id;
   prompt("\tEnter the id of the device: ");
   InputStatus inp_status = readInt(&device_id);
@@ -73,7 +73,7 @@ void rmdeviceHandler(Graph **graph) {
   printf("removed the device [%s] from the network\n", name);
 }
 
-void connectHandler(Graph **graph) {
+void connectHandler(Graph **graph, InputCommand *command) {
   int src, dest;
   prompt("\tEnter src id: ");
   InputStatus inp_status = readInt(&src);
@@ -100,7 +100,7 @@ void connectHandler(Graph **graph) {
   }
 }
 
-void disconnectHandler(Graph **graph) {
+void disconnectHandler(Graph **graph, InputCommand *command) {
   int src, dest;
   prompt("\tEnter src id: ");
   InputStatus inp_status = readInt(&src);
@@ -127,4 +127,6 @@ void disconnectHandler(Graph **graph) {
   }
 }
 
-void showHandler(Graph **graph) { displayNetwork(*graph); }
+void showHandler(Graph **graph, InputCommand *command) {
+  displayNetwork(*graph);
+}

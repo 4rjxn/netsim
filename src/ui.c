@@ -6,6 +6,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+InputStatus StringtoInt(char *buf, int *int_value) {
+  char *end;
+  errno = 0;
+  long res = strtol(buf, &end, 10);
+  if (end == buf || *end != '\0' || errno == ERANGE ||
+      !(res <= INT_MAX && res >= INT_MIN)) {
+    return INPUT_INVALID;
+  }
+  *int_value = (int)res;
+  return INPUT_OK;
+}
+
 void prompt(const char *value) {
   printf("%s", value);
   fflush(stdout);
@@ -20,6 +32,7 @@ void trim(char *str) {
     *str = '\0';
     return;
   }
+
   char *end = start + strlen(start) - 1;
   while (end > start && isspace((unsigned char)*end)) {
     end--;
@@ -51,11 +64,8 @@ InputStatus readInt(int *read_value) {
   if (st != INPUT_OK) {
     return st;
   }
-  char *end;
-  errno = 0;
-  long res = strtol(buf, &end, 10);
-  if (end == buf || *end != '\0' || errno == ERANGE ||
-      !(res <= INT_MAX && res >= INT_MIN)) {
+  int res;
+  if (StringtoInt(buf, &res) != INPUT_OK) {
     return INPUT_INVALID;
   }
   *read_value = res;
@@ -121,6 +131,7 @@ InputStatus readCommand(InputCommand *command) {
   token = strtok(NULL, delimeters);
   if (token == NULL) {
     command->arg1[0] = '\0';
+    command->arg2[0] = '\0';
     return INPUT_OK;
   }
   strcpy(command->arg1, token);

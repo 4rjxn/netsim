@@ -43,19 +43,19 @@ void printBanner(void) {
 void clear() { printf("\033[H\033[J"); }
 
 int main() {
-  char input[100];
+  InputCommand input_command;
   Graph *g = NULL;
   clear();
   printBanner();
   for (;;) {
     printf("\nnetsim (%d active): ", g == NULL ? 0 : g->device_count);
     fflush(stdout);
-    InputStatus input_status = readLine(input, sizeof(input));
+    InputStatus input_status = readCommand(&input_command);
     if (input_status == INPUT_EOF) {
       printf("errror\n");
       break;
     }
-    const Command *command = findCommand(input);
+    const Command *command = findCommand(input_command.command);
     if (command == NULL) {
       printf("invalid command.\n");
       continue;
@@ -64,6 +64,6 @@ int main() {
       printf("no network.\n");
       continue;
     }
-    command->handler(&g);
+    command->handler(&g, &input_command);
   }
 }

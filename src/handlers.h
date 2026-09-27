@@ -12,5 +12,6 @@ void rmdeviceHandler(Graph **graph, InputCommand *command, char *output_buff);
 void showHandler(Graph **graph, InputCommand *command, char *output_buff);
 void connectHandler(Graph **graph, InputCommand *command, char *output_buff);
 void disconnectHandler(Graph **graph, InputCommand *command, char *output_buff);
+void transmitHandler(Graph **graph, InputCommand *command, char *output_buff);
 
 #endif

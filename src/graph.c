@@ -1,4 +1,5 @@
 #include "graph.h"
+#include "stack.h"
 #include "status.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -165,5 +166,20 @@ ExecutionStatus removeConnection(Graph *graph, int src, int dest) {
   Device *dest_device = graph->nodes[dest];
   removeNextLink(src_device, dest);
   removeNextLink(dest_device, src);
+  return OK;
+}
+
+ExecutionStatus getNeighbours(Graph *graph, int device_id, Stack *stack) {
+  Device *device = graph->nodes[device_id];
+  if (device == NULL) {
+    return INVALID_DEVICE;
+  }
+  Device *conn = device->next;
+  while (conn != NULL) {
+    if (isValidDevice(graph, conn->id)) {
+      push(stack, graph->nodes[conn->id]);
+    }
+    conn = conn->next;
+  }
   return OK;
 }

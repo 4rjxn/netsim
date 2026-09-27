@@ -39,6 +39,17 @@ const Command commands[] = {
         .description = "Disconnects two devices.",
         .handler = disconnectHandler,
     },
+    {
+        .name = "transmit",
+        .description =
+            "Simulates packet transmission and traces path using stack.",
+        .handler = transmitHandler,
+    },
+    {
+        .name = "trace",
+        .description = "Tracks packet flow from source to destination.",
+        .handler = transmitHandler,
+    },
 };
 
 const size_t command_count = sizeof(commands) / sizeof(commands[0]);

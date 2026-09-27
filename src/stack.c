@@ -1,27 +1,48 @@
 #include "stack.h"
 #include <stdlib.h>
 
-Node *newNode() { return malloc(sizeof(Node)); }
-
-void push(Node *tos, Device *device) {
-  Node *n = newNode();
-  n->data = device;
-  n->next = NULL;
-  if (tos == NULL) {
-    tos = n;
-    return;
+Stack *createStack(void) {
+  Stack *s = malloc(sizeof(Stack));
+  if (s != NULL) {
+    s->top = NULL;
+    s->size = 0;
   }
-  n->next = tos;
-  tos = n;
+  return s;
 }
 
-Device *pop(Node *tos) {
-  if (tos == NULL) {
-    return NULL;
-  }
-  Device *device = tos->data;
-  Node *tmp = tos;
-  tos = tos->next;
-  free(tmp);
+void push(Stack *s, Device *device) {
+  if (s == NULL) return;
+  Node *n = malloc(sizeof(Node));
+  if (n == NULL) return;
+  n->data = device;
+  n->next = s->top;
+  s->top = n;
+  s->size++;
+}
+
+Device *pop(Stack *s) {
+  if (s == NULL || s->top == NULL) return NULL;
+  Node *temp = s->top;
+  Device *device = temp->data;
+  s->top = temp->next;
+  free(temp);
+  s->size--;
   return device;
+}
+
+Device *peek(Stack *s) {
+  if (s == NULL || s->top == NULL) return NULL;
+  return s->top->data;
+}
+
+bool isStackEmpty(Stack *s) {
+  return (s == NULL || s->top == NULL);
+}
+
+void freeStack(Stack *s) {
+  if (s == NULL) return;
+  while (!isStackEmpty(s)) {
+    pop(s);
+  }
+  free(s);
 }

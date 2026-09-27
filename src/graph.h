@@ -1,6 +1,7 @@
 #ifndef GRAPH_INCLUDED
 #define GRAPH_INCLUDED
 #include "status.h"
+#include <stdbool.h>
 #define NAME_SIZE 20
 #pragma once
 
@@ -38,5 +39,8 @@ Device *newDevice(DeviceType type);
 ExecutionStatus addConnection(Graph *graph, int src, int dest);
 // removes a connection from two devices
 ExecutionStatus removeConnection(Graph *graph, int src, int dest);
+
+bool isValidDevice(Graph *graph, int device_id);
+const char *deviceTypeToString(DeviceType type);
 
 #endif // !

@@ -1,6 +1,6 @@
 CC     = gcc
 CFLAGS = -Wall -Wextra -g
-SRCS   = src/main.c src/graph.c src/ui.c src/handlers.c src/command.c
+SRCS   = src/main.c src/graph.c src/ui.c src/handlers.c src/command.c src/stack.c src/bfs.c
 OBJS   = $(SRCS:.c=.o)
 
 netsim: $(OBJS)

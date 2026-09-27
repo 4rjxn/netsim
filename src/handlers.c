@@ -1,4 +1,5 @@
 #include "handlers.h"
+#include "bfs.h"
 #include "command.h"
 #include "graph.h"
 #include "status.h"
@@ -152,4 +153,13 @@ void disconnectHandler(Graph **graph, InputCommand *command,
 void showHandler(Graph **graph, InputCommand *command, char *output_buff) {
   (void)command;
   displayNetwork(*graph, output_buff);
+}
+
+void transmitHandler(Graph **graph, InputCommand *command, char *output_buff) {
+  int src, dest;
+  if (readSrcAndDest(&src, &dest, command) != INPUT_OK) {
+    fillBuffer(output_buff, "invalid input\n");
+    return;
+  }
+  simulateTransmission(*graph, src, dest, output_buff);
 }

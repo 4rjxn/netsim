@@ -8,7 +8,8 @@ enum ExecutionStatus {
   SELF_LOOP,
   DUPLICATE_CONNECTION,
   NO_SUCH_CONNECTION,
-  NULL_DEVICE
+  NULL_DEVICE,
+  UNREACHABLE
 };
 
 typedef enum ExecutionStatus ExecutionStatus;

@@ -25,6 +25,7 @@ void displayNetwork(Graph *graph, char *output_buff);
 void fillBuffer(char *buff, char *data);
 void appendToBuffer(char *buff, char *data);
 void clearBuffer(char *buff);
+const char *deviceTypeToString(DeviceType type);
 void prompt(const char *value);
 
 #endif

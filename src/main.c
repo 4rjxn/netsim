@@ -44,10 +44,18 @@ void clear() { printf("\033[H\033[J"); }
 
 int main() {
   InputCommand input_command;
+  char output_buff[1024];
+  clearBuffer(output_buff);
   Graph *g = NULL;
+  int initial = true;
   clear();
   printBanner();
   for (;;) {
+    if (!initial) {
+      clear();
+      printf("%s", output_buff);
+    }
+    initial = false;
     printf("\nnetsim (%d active): ", g == NULL ? 0 : g->device_count);
     fflush(stdout);
     InputStatus input_status = readCommand(&input_command);
@@ -57,13 +65,13 @@ int main() {
     }
     const Command *command = findCommand(input_command.command);
     if (command == NULL) {
-      printf("invalid command.\n");
+      fillBuffer(output_buff, "invalid command.\n");
       continue;
     }
     if (g == NULL && strcmp(command->name, "new") != 0) {
-      printf("no network.\n");
+      fillBuffer(output_buff, "no network.\n");
       continue;
     }
-    command->handler(&g, &input_command);
+    command->handler(&g, &input_command, output_buff);
   }
 }

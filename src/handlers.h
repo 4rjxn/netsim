@@ -4,13 +4,13 @@
 #include "ui.h"
 #pragma once
 
-void exitHandler(Graph **graph, InputCommand *command);
-void helpHandler(Graph **graph, InputCommand *command);
-void newHandler(Graph **graph, InputCommand *command);
-void addeviceHandler(Graph **graph, InputCommand *command);
-void rmdeviceHandler(Graph **graph, InputCommand *command);
-void showHandler(Graph **graph, InputCommand *command);
-void connectHandler(Graph **graph, InputCommand *command);
-void disconnectHandler(Graph **graph, InputCommand *command);
+void exitHandler(Graph **graph, InputCommand *command, char *output_buff);
+void helpHandler(Graph **graph, InputCommand *command, char *output_buff);
+void newHandler(Graph **graph, InputCommand *command, char *output_buff);
+void addeviceHandler(Graph **graph, InputCommand *command, char *output_buff);
+void rmdeviceHandler(Graph **graph, InputCommand *command, char *output_buff);
+void showHandler(Graph **graph, InputCommand *command, char *output_buff);
+void connectHandler(Graph **graph, InputCommand *command, char *output_buff);
+void disconnectHandler(Graph **graph, InputCommand *command, char *output_buff);
 
 #endif

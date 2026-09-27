@@ -28,123 +28,128 @@ InputStatus readSrcAndDest(int *src, int *dest, InputCommand *command) {
   return INPUT_OK;
 }
 
-void exitHandler(Graph **graph, InputCommand *command) {
+void exitHandler(Graph **graph, InputCommand *command, char *output_buff) {
   (void)command;
   freeGraph(*graph);
-  printf("bye.\n");
+  fillBuffer(output_buff, "bye.\n");
   exit(0);
 }
 
-void helpHandler(Graph **graph, InputCommand *command) {
+void helpHandler(Graph **graph, InputCommand *command, char *output_buff) {
   (void)command;
   (void)graph;
-  printf("Netsim Helper.\n");
+  fillBuffer(output_buff, "Netsim Helper.\n");
+  char buf[OUTPUT_BUFF_SIZE];
   for (size_t i = 0; i < command_count; i++) {
-    printf("Command: %s\n\tUsage: %s\n", commands[i].name,
-           commands[i].description);
+    snprintf(buf, OUTPUT_BUFF_SIZE, "Command: %s\n\tUsage: %s\n",
+             commands[i].name, commands[i].description);
+    appendToBuffer(output_buff, buf);
   }
 }
 
-void newHandler(Graph **graph, InputCommand *command) {
+void newHandler(Graph **graph, InputCommand *command, char *output_buff) {
   (void)command;
   if (graph != NULL) {
     freeGraph(*graph);
   }
   *graph = newGraph(5);
-  printf("created new graph.\n");
+  fillBuffer(output_buff, "created new graph.\n");
 }
 
-void addeviceHandler(Graph **graph, InputCommand *command) {
+void addeviceHandler(Graph **graph, InputCommand *command, char *output_buff) {
   (void)command;
   DeviceType type;
   char name[20];
   InputStatus res = readDeviceType(&type);
   if (res != INPUT_OK) {
-    printf("input error check your input.\n");
+    fillBuffer(output_buff, "input error check your input.\n");
     return;
   }
   prompt("Give the device a name: ");
   res = readName(name, 20);
   if (res != INPUT_OK) {
-    printf("input error check your input.\n");
+    fillBuffer(output_buff, "input error check your input.\n");
     return;
   }
   Device *device = newDevice(type);
   strcpy(device->name, name);
   ExecutionStatus status = addDevice(*graph, device);
   if (status != OK) {
-    printf("cannot complete add device action.\n");
+    fillBuffer(output_buff, "cannot complete add device action.\n");
   } else {
-    printf("successfuly added the device [ %s ] to the network\n",
-           device->name);
+    snprintf(output_buff, OUTPUT_BUFF_SIZE,
+             "successfuly added the device [ %s ] to the network\n",
+             device->name);
   }
 }
 
-void rmdeviceHandler(Graph **graph, InputCommand *command) {
+void rmdeviceHandler(Graph **graph, InputCommand *command, char *output_buff) {
   int device_id;
   if (!(*command->arg1 != '\0' &&
         StringtoInt(command->arg1, &device_id) == INPUT_OK)) {
     prompt("\tEnter the id of the device: ");
     InputStatus inp_status = readInt(&device_id);
     if (inp_status != INPUT_OK) {
-      printf("invalid input\n");
+      fillBuffer(output_buff, "invalid input\n");
       return;
     }
   }
   char name[NAME_SIZE];
 
   if ((*graph)->nodes[device_id] == NULL) {
-    printf("invalid device id\n");
+    fillBuffer(output_buff, "invalid device id\n");
     return;
   }
   strcpy(name, (*graph)->nodes[device_id]->name);
   ExecutionStatus status = removeDevice(*graph, device_id);
   if (status == INVALID_DEVICE) {
-    printf("cannot find the device.");
+    fillBuffer(output_buff, "cannot find the device.");
     return;
   }
-  printf("removed the device [%s] from the network\n", name);
+  snprintf(output_buff, OUTPUT_BUFF_SIZE,
+           "removed the device [%s] from the network\n", name);
 }
 
-void connectHandler(Graph **graph, InputCommand *command) {
+void connectHandler(Graph **graph, InputCommand *command, char *output_buff) {
   int src, dest;
   if (readSrcAndDest(&src, &dest, command) != INPUT_OK) {
-    printf("invalid input\n");
+    fillBuffer(output_buff, "invalid input\n");
     return;
   }
   ExecutionStatus status = addConnection(*graph, src, dest);
   if (status == SELF_LOOP) {
-    printf("self loop found.\n");
+    fillBuffer(output_buff, "self loop found.\n");
   } else if (status == INVALID_DEVICE) {
-    printf("no device with the id.\n");
+    fillBuffer(output_buff, "no device with the id.\n");
   } else if (status == DUPLICATE_CONNECTION) {
-    printf("duplicate connection dectected.\n");
+    fillBuffer(output_buff, "duplicate connection dectected.\n");
   } else {
-    printf("connected [%s] and [%s]", (*graph)->nodes[src]->name,
-           (*graph)->nodes[dest]->name);
+    snprintf(output_buff, OUTPUT_BUFF_SIZE, "connected [%s] and [%s]",
+             (*graph)->nodes[src]->name, (*graph)->nodes[dest]->name);
   }
 }
 
-void disconnectHandler(Graph **graph, InputCommand *command) {
+void disconnectHandler(Graph **graph, InputCommand *command,
+                       char *output_buff) {
   int src, dest;
   if (readSrcAndDest(&src, &dest, command) != INPUT_OK) {
-    printf("invalid input\n");
+    fillBuffer(output_buff, "invalid input\n");
     return;
   }
   ExecutionStatus status = removeConnection(*graph, src, dest);
   if (status == SELF_LOOP) {
-    printf("self loop found.\n");
+    fillBuffer(output_buff, "self loop found.\n");
   } else if (status == INVALID_DEVICE) {
-    printf("no device with the id.\n");
+    fillBuffer(output_buff, "no device with the id.\n");
   } else if (status == DUPLICATE_CONNECTION) {
-    printf("duplicate connection dectected.\n");
+    fillBuffer(output_buff, "duplicate connection dectected.\n");
   } else {
-    printf("disconnected [%s] and [%s]", (*graph)->nodes[src]->name,
-           (*graph)->nodes[dest]->name);
+    snprintf(output_buff, OUTPUT_BUFF_SIZE, "disconnected [%s] and [%s]",
+             (*graph)->nodes[src]->name, (*graph)->nodes[dest]->name);
   }
 }
 
-void showHandler(Graph **graph, InputCommand *command) {
+void showHandler(Graph **graph, InputCommand *command, char *output_buff) {
   (void)command;
-  displayNetwork(*graph);
+  displayNetwork(*graph, output_buff);
 }

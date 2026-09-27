@@ -18,6 +18,10 @@ InputStatus StringtoInt(char *buf, int *int_value) {
   return INPUT_OK;
 }
 
+void fillBuffer(char *buff, char *data) { strcpy(buff, data); }
+void appendToBuffer(char *buff, char *data) { strcat(buff, data); }
+void clearBuffer(char *buff) { *buff = '\0'; }
+
 void prompt(const char *value) {
   printf("%s", value);
   fflush(stdout);
@@ -142,4 +146,48 @@ InputStatus readCommand(InputCommand *command) {
   }
   strcpy(command->arg2, token);
   return INPUT_OK;
+}
+
+const char *deviceTypeToString(DeviceType type) {
+  switch (type) {
+  case ROUTER:
+    return "ROUTER";
+  case SWITCH:
+    return "SWITCH";
+  case COMPUTER:
+    return "COMPUTER";
+  case CARRY:
+    return "CARRY";
+  default:
+    return "INVALID";
+  }
+}
+
+void displayNetwork(Graph *graph, char *output_buff) {
+  if (graph->device_count == 0) {
+    fillBuffer(output_buff, "Network is empty\n");
+    return;
+  }
+  clearBuffer(output_buff);
+  char buf[OUTPUT_BUFF_SIZE];
+  for (int i = 0; i < graph->next_slot; i++) {
+    if (graph->nodes[i] == NULL) {
+      continue;
+    }
+    snprintf(buf, OUTPUT_BUFF_SIZE, "[%s] Name: %s Id: %d\n",
+             deviceTypeToString(graph->nodes[i]->type), graph->nodes[i]->name,
+             graph->nodes[i]->id);
+    appendToBuffer(output_buff, buf);
+    Device *next = graph->nodes[i]->next;
+    appendToBuffer(output_buff, "\tConnection:\n");
+    int count = 1;
+    while (next != NULL) {
+      snprintf(buf, OUTPUT_BUFF_SIZE, "\t[%d] Id: %d Name: %s Type: %s\n",
+               count, graph->nodes[next->id]->id, graph->nodes[next->id]->name,
+               deviceTypeToString(graph->nodes[next->id]->type));
+      appendToBuffer(output_buff, buf);
+      next = next->next;
+      count++;
+    }
+  }
 }

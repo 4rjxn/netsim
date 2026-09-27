@@ -38,7 +38,5 @@ Device *newDevice(DeviceType type);
 ExecutionStatus addConnection(Graph *graph, int src, int dest);
 // removes a connection from two devices
 ExecutionStatus removeConnection(Graph *graph, int src, int dest);
-// displayes the given network details form the graph
-void displayNetwork(Graph *graph);
 
 #endif // !

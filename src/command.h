@@ -10,7 +10,7 @@ typedef struct Command Command;
 struct Command {
   char *name;
   char *description;
-  void (*handler)(Graph **graph, InputCommand *command);
+  void (*handler)(Graph **graph, InputCommand *command, char *output_buff);
 };
 
 extern const Command commands[];

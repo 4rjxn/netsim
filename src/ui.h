@@ -2,6 +2,7 @@
 #define UI_H
 #include "graph.h"
 #include <stddef.h>
+#define OUTPUT_BUFF_SIZE 1024
 #pragma once
 
 enum InputStatus { INPUT_OK, INPUT_INVALID, INPUT_EOF };
@@ -20,6 +21,10 @@ InputStatus readName(char *read_value, size_t size);
 InputStatus readCommand(InputCommand *command);
 InputStatus readDeviceType(DeviceType *type);
 InputStatus StringtoInt(char *buf, int *int_value);
+void displayNetwork(Graph *graph, char *output_buff);
+void fillBuffer(char *buff, char *data);
+void appendToBuffer(char *buff, char *data);
+void clearBuffer(char *buff);
 void prompt(const char *value);
 
 #endif

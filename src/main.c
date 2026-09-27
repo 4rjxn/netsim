@@ -68,7 +68,8 @@ int main() {
       fillBuffer(output_buff, "invalid command.\n");
       continue;
     }
-    if (g == NULL && strcmp(command->name, "new") != 0) {
+    if (g == NULL && strcmp(command->name, "new") != 0 &&
+        strcmp(command->name, "help") != 0) {
       fillBuffer(output_buff, "no network.\n");
       continue;
     }
